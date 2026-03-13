@@ -1,37 +1,39 @@
 # Campus Track
 
-Role-based fullstack academic project tracker built for admissions-ready portfolios.
+Fullstack multi-page academic project tracker for admissions-ready portfolio presentation.
 
-## Highlights
-- Role switcher (`student`, `mentor`, `admin`) with contextual UX
-- Fullstack demo endpoints (`/api/projects`, `/api/tasks`, `/api/tasks/[taskId]`)
-- Task creation and workflow progression on a kanban board
-- Animated and responsive design with custom typography
+## What is included
+- `Overview` page with product-level summary
+- `Projects` page with completion and health registry
+- `Tasks` page with API-driven CRUD + status transitions
+- `Analytics` page with delivery and risk metrics
+
+## UI and Architecture
+- Ready UI blocks from **Ant Design** (`Menu`, `Card`, `Table`, `Progress`, `Statistic`)
+- Animated sections with `framer-motion`
+- API endpoints for task and project operations
 
 ## Tech Stack
-- Next.js 16 (App Router + Route Handlers)
+- Next.js 16 + App Router + Route Handlers
 - TypeScript
 - Tailwind CSS 4
+- Ant Design
 - Framer Motion
 
-## Local Development
+## Routes
+- `/`
+- `/projects`
+- `/tasks`
+- `/analytics`
+- `/api/projects`
+- `/api/tasks`
+- `/api/tasks/[taskId]`
+
+## Run locally
 ```bash
 npm install
 npm run dev
 ```
 
-## Build
-```bash
-npm run build
-npm start
-```
-
-## Railway Deployment
-1. Create a Railway project and link this repository.
-2. Railway will auto-detect Next.js and run build/start scripts.
-
-## Portfolio Positioning
-Use this project to demonstrate:
-- API design and server/client integration
-- CRUD workflows with status transitions
-- Product thinking for educational tooling
+## Production
+Deployed on Railway.
