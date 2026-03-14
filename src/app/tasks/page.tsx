@@ -12,28 +12,17 @@ import {
   Sparkles,
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  addTask,
+  getProjects,
+  getTasks,
+  moveTask,
+  type Project,
+  type Task,
+  type TaskStatus,
+} from "@/lib/mock-db";
 
 type UserRole = "student" | "mentor" | "admin";
-type TaskStatus = "Backlog" | "In Progress" | "Review" | "Done";
-
-interface Project {
-  id: string;
-  name: string;
-  owner: string;
-  completion: number;
-  health: "Healthy" | "Needs attention";
-  nextReview: string;
-}
-
-interface Task {
-  id: string;
-  title: string;
-  course: string;
-  owner: string;
-  deadline: string;
-  status: TaskStatus;
-  priority: "Low" | "Medium" | "High";
-}
 
 const statuses: TaskStatus[] = ["Backlog", "In Progress", "Review", "Done"];
 
@@ -63,18 +52,8 @@ export default function Home() {
 
   async function loadData() {
     setIsLoading(true);
-
-    const [projectRes, taskRes] = await Promise.all([fetch("/api/projects"), fetch("/api/tasks")]);
-
-    if (!projectRes.ok || !taskRes.ok) {
-      setIsLoading(false);
-      return;
-    }
-
-    const projectPayload = await projectRes.json();
-    const taskPayload = await taskRes.json();
-    setProjects(projectPayload.projects);
-    setTasks(taskPayload.tasks);
+    setProjects(getProjects());
+    setTasks(getTasks());
     setIsLoading(false);
   }
 
@@ -105,21 +84,21 @@ export default function Home() {
 
     setIsSaving(true);
 
-    const response = await fetch("/api/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, course, owner, deadline, priority }),
+    const task = addTask({
+      title,
+      course,
+      owner,
+      deadline,
+      status: "Backlog",
+      priority,
     });
 
-    if (response.ok) {
-      const payload = await response.json();
-      setTasks((prev) => [payload.task, ...prev]);
-      setTitle("");
-      setCourse("");
-      setOwner("");
-      setDeadline("");
-      setPriority("Medium");
-    }
+    setTasks((prev) => [task, ...prev]);
+    setTitle("");
+    setCourse("");
+    setOwner("");
+    setDeadline("");
+    setPriority("Medium");
 
     setIsSaving(false);
   }
@@ -127,13 +106,8 @@ export default function Home() {
   async function moveTaskForward(task: Task) {
     const updatedStatus = nextStatus(task.status);
 
-    const response = await fetch(`/api/tasks/${task.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: updatedStatus }),
-    });
-
-    if (!response.ok) {
+    const updated = moveTask(task.id, updatedStatus);
+    if (!updated) {
       return;
     }
 
