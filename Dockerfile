@@ -9,4 +9,4 @@ FROM alpine:3.20 AS runner
 WORKDIR /site
 COPY --from=builder /app/dist ./
 EXPOSE 3000
-CMD ["sh", "-c", "httpd -f -p ${PORT:-3000} -h /site"]
+CMD ["sh", "-c", "busybox httpd -f -p ${PORT:-3000} -h /site"]
